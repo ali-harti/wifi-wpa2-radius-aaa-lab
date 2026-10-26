@@ -14,6 +14,26 @@ One routed wireless network built **three times** and compared across three secu
 | **Report** | [`docs/`](docs/) (French, dated 14 October 2026) |
 | **Status** | Finished. 13 of 13 validation checks pass |
 
+## Real-World Context: Why This Project Exists
+
+### 1. The Real-World Need
+Wireless Local Area Networks (WLANs) transmit radio signals beyond physical walls, property lines, and office doors. Because physical security cannot prevent an attacker from listening to or transmitting Wi-Fi frames, authentication and link-layer encryption are the organization's frontline defenses:
+- **The Cleartext Vulnerability of Open Networks:** In unencrypted networks, all frames travel in the clear. Any passive listener within signal range can intercept unencrypted sessions, sniff sensitive cookies, harvest credentials, or execute rogue AP (evil twin) attacks.
+- **The Operational Flaw of WPA2-Personal (PSK):** While WPA2-PSK encrypts over-the-air traffic with AES-CCMP, it relies on a single shared passphrase for all devices. When an employee departs, a contractor leaves, or a device is lost, administrators face a logistically impossible task: reconfiguring the passphrase on dozens or hundreds of client devices. In reality, organizations almost never change it, leaving their internal network permanently vulnerable to unauthorized former users. Furthermore, PSK provides zero audit trails or individual accountability.
+- **The Enterprise Requirement (802.1X / RADIUS):** Corporate and institutional environments mandate centralized **Authentication, Authorization, and Accounting (AAA)**. With WPA2-Enterprise / RADIUS, every user logs in with unique credentials. Revocation is instantaneous at the central directory without touching access points or interrupting other users.
+
+### 2. Why We Built This Lab
+The objective was to deploy an identical multi-zone routed network in Cisco Packet Tracer and systematically evaluate all three wireless security models—Open, WPA2-PSK, and WPA2-Enterprise (RADIUS)—under identical conditions:
+- To demonstrate why WPA2-PSK fails the operational requirements of an organization with multiple users.
+- To validate the end-to-end authentication exchange between wireless clients, access points acting as RADIUS Network Access Servers (NAS), and the central AAA server across routed boundaries.
+- To prove credential isolation: confirming that invalid credentials drop unauthorized sessions immediately, while legitimate authenticated users receive dynamic IP leases and reach both internal intranet and external internet services.
+
+### 3. What Was Engineered
+- **Multi-Zone Wireless Access:** Two Cisco WRT300N wireless routers delivering dual distinct Wi-Fi cells (`192.168.1.0/24` and `192.168.2.0/24`) with localized DHCP pools and NAT.
+- **Routed Core Infrastructure:** Point-to-point OSPF Area 0 core connecting two Cisco 2911 routers, isolating the wireless perimeter from the server farm and remote simulated Internet.
+- **Centralized AAA/RADIUS Architecture:** Dedicated AAA server configured with NAS client secrets and individual user authentication credentials.
+- **Comprehensive Verification Matrix:** 13 verified test checks validating association, DHCP leasing, DNS resolution, and dual-server HTTP access across all three security configurations.
+
 ## The three security models
 
 Same hardware, same smartphones, same routing. Only the Wi-Fi security settings change between scenarios, so a failure in a later scenario points to the security settings, not to routing, DNS or DHCP.
