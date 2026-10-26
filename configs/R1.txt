@@ -1,0 +1,18 @@
+! R1 (Router1) - Cisco 2911 - servers LAN gateway and core link to R2
+! Answer "no" to the initial configuration dialog, then paste.
+enable
+configure terminal
+hostname R1
+no ip domain-lookup
+interface gigabitEthernet0/1
+ ip address 212.217.1.1 255.255.255.0
+ no shutdown
+interface gigabitEthernet0/0
+ ip address 212.217.2.1 255.255.255.252
+ no shutdown
+router ospf 1
+ passive-interface gigabitEthernet0/1
+ network 212.217.1.0 0.0.0.255 area 0
+ network 212.217.2.0 0.0.0.3 area 0
+end
+write memory
